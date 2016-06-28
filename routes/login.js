@@ -1,5 +1,8 @@
 var express = require('express');
 var mysql = require('mysql');
+
+
+var crypto = require('crypto');
 var router = express.Router();
 
 var connection = mysql.createConnection({
@@ -16,7 +19,10 @@ router.post('/', function(req, res, next) {
   var email = req.param('email');
   var password = req.param('password');
 
-  connection.query('SELECT * from user where email = "' + email +'" and password = "' + password+ '"', function (err, rows, field) {
+  var mypass = crypto.createHash('sha512').update(password).digest('hex');
+
+
+  connection.query('SELECT * from user where email = "' + email +'" and password = "' + mypass+ '"', function (err, rows, field) {
 
 
 

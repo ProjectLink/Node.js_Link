@@ -1,5 +1,6 @@
 var express = require('express');
 var mysql = require('mysql');
+var crypto = require('crypto');
 var router = express.Router();
 
 var connection = mysql.createConnection({
@@ -15,40 +16,65 @@ connection.commit();
 router.post('/', function(req, res, next) {
     var email = req.param('email');
     var password = req.param('password');
-    var nickname = req.param("nickname");
-    var sex = req.param('sex');
-    var day = req.param('day');
+    var name = req.param("name");
+    var gender = req.param('gender');
+    var birtday = req.param('birtday');
 
-    connection.query('SELECT * from user where email = "' + email +'" and password = "' + password+ '"', function (err, rows, field) {
+    var mypass = crypto.createHash('sha512').update(password).digest('hex');
 
+    
+    
+    
+    var user = {'email':email,
+        'password':mypass,
+        'name':name,
+        'gender':gender,
+        'birtday':birtday
+    };
 
-
-        if(!err) {
-            if(rows.length == 0) {
-
-                res.send(JSON.stringify({ success : false }) );
-
-            }
-            else {
-
-                res.send(JSON.stringify({ success : true }) );
-
-            }
-
-        } else {
-            res.send("로그인 실패");
+    connection.query('SELECT * from user where email = "' + email +'"', function (err, rows, field) {
+        if (err) {
+            console.error(err);
+            throw err;
         }
+
+        if(rows.length == 0) {
+
+            connection.query('insert into user set ?',user, function(error, result){
+                if (error) {
+                    console.error(error);
+                    throw error;
+                }
+                res.send(JSON.stringify({ success : true }) );
+            });
+
+        }
+        else {
+
+            res.send(JSON.stringify({ success : false }) );
+
+        }
+
     });
+
+
+
+
+
+
+
+
+
+});
+
+router.post('/chk', function(req, res, next) {
+    var email = req.param('email');
+
+
+
+
 
 });
 
 module.exports = router;
 
-
-/*
- var data = ['서울특별시 종로구',1];
- client.query('insert into local values(?,?)',data,  function(error, result){
- if(!error){
- console.log(result);
- }
- */
