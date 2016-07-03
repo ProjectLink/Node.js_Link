@@ -12,6 +12,7 @@ var connection = mysql.createConnection({
   database : 'links'
 });
 
+
 connection.commit();
 
 /* GET users listing. */

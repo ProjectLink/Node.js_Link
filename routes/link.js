@@ -14,6 +14,31 @@ var connection = mysql.createConnection({
 
 connection.commit();
 
+
+router.post('/', function(req, res, next) {
+    var email = req.param('email');
+    var folder_name = req.param('folder_name');
+
+
+    connection.query('SELECT * from link_list where email = "' + email + '" and folder_name = "'+ folder_name+'"', function (err, rows, field) {
+
+        console.log(email + folder_name);
+        if (rows.length == 0) {
+
+            res.send(JSON.stringify({success: false}));
+
+        }
+        else {
+
+            res.send(rows);
+
+        }
+
+
+    });
+});
+
+
 /* GET users listing. */
 router.post('/folder', function(req, res, next) {
     var email = req.param('email');
