@@ -8,7 +8,7 @@ var app = require('../app');
 var debug = require('debug')('Links:server');
 var http = require('http');
 
-debug('Listening on ');
+console.log('Listening on ');
 /**
  * Get port from environment and store in Express.
  */
