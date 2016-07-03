@@ -4,11 +4,11 @@
  * Module dependencies.
  */
 
-debug('Listening on ');
 var app = require('../app');
 var debug = require('debug')('Links:server');
 var http = require('http');
 
+debug('Listening on ');
 /**
  * Get port from environment and store in Express.
  */
