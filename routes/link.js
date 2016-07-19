@@ -6,10 +6,10 @@ var crypto = require('crypto');
 var router = express.Router();
 
 var connection = mysql.createConnection({
-    host : 'localhost',
+    host : '211.253.28.111',
     user : 'root',
     password : '506030',
-    database : 'links'
+    database : 'linkmon'
 });
 
 connection.commit();
@@ -20,7 +20,7 @@ router.post('/', function(req, res, next) {
     var folder_name = req.param('folder_name');
 
 
-    connection.query('SELECT * from link_list where email = "' + email + '" and folder_name = "'+ folder_name+'"', function (err, rows, field) {
+    connection.query('SELECT * from link_list where email = "' + email + '" and folder_name = "'+ folder_name+'" ORDER BY createday DESC', function (err, rows, field) {
 
         console.log(email + folder_name);
         if (rows.length == 0) {
@@ -43,21 +43,16 @@ router.post('/', function(req, res, next) {
 router.post('/folder', function(req, res, next) {
     var email = req.param('email');
 
-
     connection.query('SELECT * from link_folder where email = "' + email + '"', function (err, rows, field) {
+       
+        if (rows.length == 0) {
 
+            res.send(JSON.stringify({success: false}));
 
-            if (rows.length == 0) {
-
-                res.send(JSON.stringify({success: false}));
-
-            }
-            else {
-
-                res.send(rows);
-
-            }
-
+        }
+        else {
+            res.send(rows);
+        }
 
     });
 });
@@ -75,7 +70,7 @@ router.post('/folder/add', function(req, res, next) {
         'email': email
     };
 
-    connection.query('SELECT * from link_folder where title = "' + name + '" and email = "' + name + '"', function (err, rows, field) {
+    connection.query('SELECT * from link_folder where title = "' + name + '" and email = "' + email + '"', function (err, rows, field) {
         if (err) {
             console.error(err);
             throw err;

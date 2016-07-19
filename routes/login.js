@@ -6,10 +6,10 @@ var crypto = require('crypto');
 var router = express.Router();
 
 var connection = mysql.createConnection({
-  host : 'localhost',
+  host : '211.253.28.111',
   user : 'root',
   password : '506030',
-  database : 'links'
+  database : 'linkmon'
 });
 
 
