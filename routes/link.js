@@ -53,7 +53,7 @@ router.post('/add', function(req, res, next) {
     client.on("fetch", function(){
 
         if(client.image == undefined) {
-            image = "http://imgur.com/a/txbwW";
+            image = "http://i.imgur.com/GmVgy4A.png";
         } else {
             image = client.image;
         }
@@ -102,7 +102,7 @@ router.post('/add', function(req, res, next) {
 
     client.on("error", function(err){
 
-        image = "http://imgur.com/a/txbwW";
+        image = "http://i.imgur.com/GmVgy4A.png";
 
         var link = {
             'image': image,
