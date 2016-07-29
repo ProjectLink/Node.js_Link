@@ -4,16 +4,18 @@ var mysql = require('mysql');
 
 var crypto = require('crypto');
 var router = express.Router();
-
-var connection = mysql.createConnection({
-  host : '211.253.28.111',
-  user : 'root',
-  password : '506030',
-  database : 'linkmon'
-});
+var connection=null;
 
 
-connection.commit();
+function init() {
+  connection = mysql.createConnection({
+    host : '211.253.28.111',
+    user : 'root',
+    password : '506030',
+    database : 'linkmon'
+  });
+  connection.commit();
+}
 
 /* GET users listing. */
 router.post('/', function(req, res, next) {
@@ -22,7 +24,7 @@ router.post('/', function(req, res, next) {
 
   var mypass = crypto.createHash('sha512').update(password).digest('hex');
 
-
+  init();
   connection.query('SELECT * from user where email = "' + email +'" and password = "' + mypass+ '"', function (err, rows, field) {
 
 
@@ -42,9 +44,10 @@ router.post('/', function(req, res, next) {
     } else {
       res.send(err);
     }
+    connection.end();
 
   });
 
-});
 
+});
 module.exports = router;

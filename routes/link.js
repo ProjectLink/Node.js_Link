@@ -4,25 +4,26 @@ var mysql = require('mysql');
 var mate = require('../node_modules/meta/index');
 var crypto = require('crypto');
 var router = express.Router();
+var connection=null;
 
-var connection = mysql.createConnection({
-    host : '211.253.28.111',
-    user : 'root',
-    password : '506030',
-    database : 'linkmon'
-});
 
-connection.commit();
-
+function init() {
+    connection = mysql.createConnection({
+        host : '211.253.28.111',
+        user : 'root',
+        password : '506030',
+        database : 'linkmon'
+    });
+    connection.commit();
+}
 
 router.post('/', function(req, res, next) {
     var email = req.param('email');
     var folder_name = req.param('folder_name');
 
-
+    init();
     connection.query('SELECT * from link_list where email = "' + email + '" and folder_name = "'+ folder_name+'" ORDER BY createday DESC', function (err, rows, field) {
 
-        console.log(email + folder_name);
         if (rows.length == 0) {
 
             res.send(JSON.stringify({success: false}));
@@ -35,6 +36,8 @@ router.post('/', function(req, res, next) {
         }
 
 
+
+        connection.end();
     });
 });
 
@@ -69,7 +72,7 @@ router.post('/add', function(req, res, next) {
         };
 
 
-
+        init();
         connection.query('SELECT * from link_list where email = "' + email + '" and link = "' + links + '" and folder_name = "'+ folder_name+ '"', function (err, rows, field) {
             if (err) {
                 console.error(err);
@@ -94,8 +97,9 @@ router.post('/add', function(req, res, next) {
 
             }
 
-        });
 
+            connection.end();
+        });
 
 
     });
@@ -115,6 +119,7 @@ router.post('/add', function(req, res, next) {
         };
 
 
+        init();
 
         connection.query('SELECT * from link_list where email = "' + email + '" and link = "' + links + '" and folder_name = "'+ folder_name+ '"', function (err, rows, field) {
             if (err) {
@@ -140,8 +145,9 @@ router.post('/add', function(req, res, next) {
 
             }
 
-        });
 
+            connection.end();
+        });
 
     });
 
@@ -156,9 +162,10 @@ router.post('/add', function(req, res, next) {
 router.post('/folder', function(req, res, next) {
     var email = req.param('email');
 
+    init();
     connection.query('SELECT * from link_folder where email = "' + email + '"', function (err, rows, field) {
 
-        if (rows.length == 0) {
+        if (err) {
 
             res.send(JSON.stringify({success: false}));
 
@@ -166,8 +173,11 @@ router.post('/folder', function(req, res, next) {
         else {
             res.send(rows);
         }
+        connection.end();
 
     });
+
+
 });
 
 
@@ -182,6 +192,7 @@ router.post('/folder/add', function(req, res, next) {
         'count': 0,
         'email': email
     };
+    init();
 
     connection.query('SELECT * from link_folder where title = "' + name + '" and email = "' + email + '"', function (err, rows, field) {
         if (err) {
@@ -205,11 +216,11 @@ router.post('/folder/add', function(req, res, next) {
             res.send(JSON.stringify({success: false}));
 
         }
+        connection.end();
 
     });
+
 });
-
-
 
 
 module.exports = router;
