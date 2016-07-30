@@ -183,6 +183,7 @@ router.post('/folder', function(req, res, next) {
 
 /* GET users listing. */
 router.post('/folder/add', function(req, res, next) {
+    var img = req.param('image');
     var email = req.param('email');
     var name = req.param('name');
 
@@ -190,7 +191,8 @@ router.post('/folder/add', function(req, res, next) {
     var user = {
         'title': name,
         'count': 0,
-        'email': email
+        'email': email,
+        'image' : img
     };
     init();
 
