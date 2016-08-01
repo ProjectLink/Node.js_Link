@@ -5,7 +5,7 @@ var mate = require('../node_modules/meta/index');
 var crypto = require('crypto');
 var router = express.Router();
 var connection=null;
-
+var count;
 
 function init() {
     connection = mysql.createConnection({
@@ -56,7 +56,10 @@ router.post('/add', function(req, res, next) {
     client.on("fetch", function(){
 
         if(client.image == undefined) {
-            image = "http://i.imgur.com/GmVgy4A.png";
+            //image = "http://i.imgur.com/GmVgy4A.png";
+
+            image = client.images[1];
+
         } else {
             image = client.image;
         }
@@ -81,13 +84,35 @@ router.post('/add', function(req, res, next) {
 
             if (rows.length == 0) {
 
+
+
+
                 connection.query('insert into link_list set ?', link, function (error, result) {
                     if (error) {
+                        res.send(JSON.stringify({success: false}));
                         console.error(error);
                         throw error;
+                    } else {
+
                     }
-                    res.send(JSON.stringify({success: true}));
                 });
+
+                connection.query('SELECT COUNT(*) as cnt from link_list where email = "' + email + '" and folder_name = "'+ folder_name+ '"', function (err,rows, field) {
+                    if(!err) {
+                        count = rows[0].cnt;
+                        init();
+                        connection.query('update link_folder set count = ? where title =? AND email=?',[rows[0].cnt,folder_name,email], function (error, result) {
+                            if (!error) {
+                                res.send(JSON.stringify({success: true}));
+
+                            } else {
+                                res.send(JSON.stringify({success: false}));
+                            }
+                        });
+                    }
+                });
+
+
 
             }
             else {
