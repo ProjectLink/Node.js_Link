@@ -58,7 +58,7 @@ router.post('/add', function(req, res, next) {
         if(client.image == undefined) {
             //image = "http://i.imgur.com/GmVgy4A.png";
 
-            image = client.images[1];
+            image = client.images[0];
 
         } else {
             image = client.image;
