@@ -42,7 +42,7 @@ router.post('/', function(req, res, next) {
             throw err;
         }
 
-        if(rows.length == 0) {
+        if (rows.length == 0) {
 
             connection.query('insert into user set ?',user, function(error, result){
                 if (error) {
@@ -55,6 +55,7 @@ router.post('/', function(req, res, next) {
         }
         else {
 
+            res.statusCode = 500;
             res.send(JSON.stringify({ success : false }) );
 
         }

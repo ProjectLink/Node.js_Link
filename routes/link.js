@@ -10,6 +10,8 @@ var count;
 function init() {
     connection = mysql.createConnection({
         host : '211.253.28.111',
+
+        //host : '127.0.0.1',
         user : 'root',
         password : '506030',
         database : 'linkmon'
@@ -22,10 +24,11 @@ router.post('/', function(req, res, next) {
     var folder_name = req.param('folder_name');
 
     init();
-    connection.query('SELECT * from link_list where email = "' + email + '" and folder_name = "'+ folder_name+'" ORDER BY createday DESC', function (err, rows, field) {
+    connection.query('SELECT * from link_list where email = "' + email + '" and folder_name = "'+ folder_name+'" ORDER BY createdate DESC', function (err, rows, field) {
 
         if (rows.length == 0) {
 
+            res.statusCode = 500;
             res.send(JSON.stringify({success: false}));
 
         }
@@ -47,13 +50,15 @@ router.post('/add', function(req, res, next) {
     var links = req.param("links");
     var email = req.param("email");
     var folder_name = req.param("folder_name");
-    var createday = req.param("day");
+    var createdate = req.param("day");
     var image ;
 
     var client = new mate(links, {timeout :5000});
 
 
     client.on("fetch", function(){
+
+        console.log(client.title);
 
         if(client.image == undefined) {
             //image = "http://i.imgur.com/GmVgy4A.png";
@@ -71,7 +76,7 @@ router.post('/add', function(req, res, next) {
             'link': links,
             'email': email,
             'folder_name': folder_name,
-            'createday': createday
+            'createdate': createdate
         };
 
 
@@ -89,6 +94,8 @@ router.post('/add', function(req, res, next) {
 
                 connection.query('insert into link_list set ?', link, function (error, result) {
                     if (error) {
+
+                        res.statusCode = 500;
                         res.send(JSON.stringify({success: false}));
                         console.error(error);
                         throw error;
@@ -106,6 +113,8 @@ router.post('/add', function(req, res, next) {
                                 res.send(JSON.stringify({success: true}));
 
                             } else {
+
+                                res.statusCode = 500;
                                 res.send(JSON.stringify({success: false}));
                             }
                         });
@@ -117,6 +126,7 @@ router.post('/add', function(req, res, next) {
             }
             else {
 
+                res.statusCode = 500;
                 res.send(JSON.stringify({success: false,
                     messgae : "중복된 링크"}));
 
@@ -140,7 +150,7 @@ router.post('/add', function(req, res, next) {
             'link': links,
             'email': email,
             'folder_name': folder_name,
-            'createday': createday
+            'createdate': createdate
         };
 
 
@@ -156,6 +166,7 @@ router.post('/add', function(req, res, next) {
 
                 connection.query('insert into link_list set ?', link, function (error, result) {
                     if (error) {
+
                         console.error(error);
                         throw error;
                     }
@@ -164,7 +175,7 @@ router.post('/add', function(req, res, next) {
 
             }
             else {
-
+                res.statusCode = 500;
                 res.send(JSON.stringify({success: false,
                     messgae : "중복된 링크"}));
 
@@ -192,6 +203,7 @@ router.post('/folder', function(req, res, next) {
 
         if (err) {
 
+            res.statusCode = 500;
             res.send(JSON.stringify({success: false}));
 
         }
@@ -240,6 +252,7 @@ router.post('/folder/add', function(req, res, next) {
         }
         else {
 
+            res.statusCode = 500;
             res.send(JSON.stringify({success: false}));
 
         }

@@ -9,6 +9,8 @@ var routes = require('./routes/index');
 var login = require('./routes/login');
 var signup = require('./routes/signup');
 var link = require('./routes/link');
+var share = require('./routes/share');
+var user = require('./routes/user');
 
 var app = express();
 
@@ -28,9 +30,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/user', user);
+
 app.use('/login', login);
 app.use('/signup', signup);
 app.use('/link', link);
+app.use('/share', share);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
