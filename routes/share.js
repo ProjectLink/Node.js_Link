@@ -22,7 +22,7 @@ function init() {
 router.get('/', function(req, res) {
 
     init();
-    connection.query('SELECT * from link_share JOIN user ON user.id=link_share.id ORDER BY createdate DESC ', function (err, rows, field) {
+    connection.query('SELECT * from link_share LEFT OUTER JOIN user ON user.id=link_share.id ORDER BY createdate DESC LIMIT 10', function (err, rows, field) {
 
         if (rows.length == 0) {
 
@@ -50,7 +50,6 @@ router.get('/', function(req, res) {
 
             }
 
-
             res.send(JSON.stringify(send));
 
         }
@@ -59,6 +58,90 @@ router.get('/', function(req, res) {
 
         connection.end();
     });
+});
+
+
+router.post('/links', function(req, res) {
+    console.log(req);
+
+    var type = req.query.type;
+
+    var links = 0;
+    var link = Array();
+
+    var folder1 = null;
+    var folder2 = null;
+    var folder3 = null;
+
+    var select = null;
+
+    if(type == "link") {
+        links = req.param("links");
+
+
+
+        for(var i = 0; i < links; i++) {
+            link.push(req.param("link"+(i+1)));
+        }
+
+        switch (links) {
+            case 1:
+                select = "SELECT * from link_list where id = "+link[0];
+                break;
+
+            case 2:
+                select = "SELECT * from link_list where id = "+link[0] +" or id = " + link[1];
+                break;
+
+            case 3:
+                select = "SELECT * from link_list where id = "+link[0] +" or id = " + link[1] + " or id = "+ link[2];
+                break;
+        }
+    } else if(type == "folder") {
+
+    }
+
+    /*
+     "id": 235,
+     "image": null,
+     "type": 0,
+     "title": " 루리웹",
+     "content": "개잼",
+     "link": "ruliweb.com",
+     "email": "com5090@naver.com",
+     "folder_name": "gogs",
+     "likes": 0,
+     "replys": 0,
+     "share": 0,
+     "views": 0,
+     "createdate": "2016-09-03T16:40:06.000Z",
+     "updateday": null
+     */
+
+
+    init();
+    connection.query(select, function (err, rows, field) {
+
+        var send = Array();
+
+        for(var i = 0; i< rows.length; i++) {
+            send[i] = {
+                id : rows[i].id,
+                image : rows[i].image,
+                title : rows[i].title,
+                link : rows[i].link,
+                share : rows[i].share
+            }
+        }
+
+        res.send(send);
+
+    });
+
+
+
+
+
 });
 
 module.exports = router;
