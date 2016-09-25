@@ -62,7 +62,6 @@ router.get('/', function(req, res) {
 
 
 router.post('/links', function(req, res) {
-    console.log(req);
 
     var type = req.query.type;
 
@@ -131,6 +130,39 @@ router.post('/links', function(req, res) {
                 title : rows[i].title,
                 link : rows[i].link,
                 share : rows[i].share
+            }
+        }
+
+        res.send(send);
+
+    });
+
+
+
+
+
+});
+
+
+
+
+router.post('/reply', function(req, res) {
+
+    var share_id = req.param("share_id");
+
+
+    init();
+    connection.query("select * from link_share_reply LEFT OUTER JOIN user ON user.id=link_share_reply.user_id where share_id = "+ share_id + " ORDER BY createdate DESC LIMIT 10", function (err, rows, field) {
+
+        var send = Array();
+
+        for(var i = 0; i< rows.length; i++) {
+            send[i] = {
+                id : rows[i].id,
+                image : rows[i].img,
+                name : rows[i].name,
+                say : rows[i].say,
+                date : rows[i].createdate
             }
         }
 
