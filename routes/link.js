@@ -9,7 +9,8 @@ var count;
 
 function init() {
     connection = mysql.createConnection({
-        host : '211.253.28.111',
+        //host : '211.253.28.111',
+        host : '127.0.0.1',
 
         //host : '127.0.0.1',
         user : 'root',
@@ -50,7 +51,7 @@ router.post('/add', function(req, res, next) {
     var links = req.param("links");
     var email = req.param("email");
     var folder_name = req.param("folder_name");
-    var createdate = req.param("day");
+    var createdate = req.param("createday");
     var image ;
 
     var client = new mate(links, {timeout :5000});

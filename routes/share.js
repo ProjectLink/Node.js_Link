@@ -9,7 +9,8 @@ var count;
 
 function init() {
     connection = mysql.createConnection({
-        host : '211.253.28.111',
+        //host : '211.253.28.111',
+        host : '127.0.0.1',
         //host : '127.0.0.1',
         user : 'root',
         password : '506030',
